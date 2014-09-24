@@ -1,0 +1,17 @@
+{
+  "namespace": "com.paypal.cookie.schema",
+  "type": "record",
+  "name": "CookiePPLog",
+  "doc": "Log XPPP cookie.",
+  "fields": [
+	    {
+			"name": "timestamp", 
+			"type": "long"
+		},
+	    {
+			"name": "body", 
+			"type": "string"
+		}
+	]
+}
+	
