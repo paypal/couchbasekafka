@@ -5,45 +5,28 @@ package com.paypal.utils.cb.kafka;
  * @author ssudhakaran
  *
  */
-public class CBMessageTransformerFactory {
-	private Class<CBMessageConverter> converterClass =null;
-	private static CBMessageTransformerFactory cbMessageTransformerFactory=null;
+public enum CBMessageTransformerFactory {
+	INSTANCE;
 	
-	@SuppressWarnings("unchecked")
-	private CBMessageTransformerFactory() throws ClassNotFoundException{
-		
-		String messageImplClass=ConfigLoader.getProp(Constants.CBMESSAGECONVERTER);
-		converterClass=(Class<CBMessageConverter>) Class.forName(messageImplClass);
-	}
+	private CBMessageConverter converterClassObj =null;
 	
-	/**
-	 * get Instance method with double check locking.
-	 * @return
-	 * @throws ClassNotFoundException
-	 */
-	public static CBMessageTransformerFactory getInstance() throws ClassNotFoundException{
-		
-		if(cbMessageTransformerFactory==null){
-			synchronized(CBMessageTransformerFactory.class){
-				if(cbMessageTransformerFactory==null)
-					cbMessageTransformerFactory=new CBMessageTransformerFactory();
-			}
-		}
-		return cbMessageTransformerFactory;
-	}
 	/**
 	 * return the custom converter for the message.
 	 * @return
 	 */
 	public CBMessageConverter createCBMessageConverter(){
 		try {
-			return converterClass.newInstance();
+			if(converterClassObj ==null){
+				converterClassObj=(CBMessageConverter) Class.forName(ConfigLoader.getProp(Constants.CBMESSAGECONVERTER)).newInstance();
+			}
+			return  converterClassObj;
+		}catch (ClassNotFoundException e) {
+				e.printStackTrace();
+				return null;
 		} catch (InstantiationException e) {
-			// TODO Auto-generated catch block
 			e.printStackTrace();
 			return null;
 		} catch (IllegalAccessException e) {
-			// TODO Auto-generated catch block
 			e.printStackTrace();
 			return null;
 		}

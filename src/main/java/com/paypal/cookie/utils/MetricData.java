@@ -257,7 +257,6 @@ public class MetricData{
 		Set<String> keys = new HashSet<String>();
 		keys.addAll(flowgetmap.keySet());
 		keys.addAll(metricData.fetchflowGetMapKeys());
-		System.out.println("Get Keys:"+keys);
 		
 		for(String flowName:keys){
 			//flowgetmap.replace(flowName,new AtomicInteger(this.getflowGetCount(flowName)+ metricData.getflowGetCount(flowName)));
@@ -268,8 +267,6 @@ public class MetricData{
 		keys2.addAll(flowputmap.keySet());
 		keys2.addAll(metricData.fetchflowPutMapKeys());
 
-		System.out.println("Get Keys:"+keys2);
-		
 		for(String flowName:keys2){
 			//flowputmap.replace(flowName,new AtomicInteger(this.getflowPutCount(flowName)+ metricData.getflowPutCount(flowName)));
 			flowputmap.put(flowName,new AtomicInteger(this.getflowPutCount(flowName)+ metricData.getflowPutCount(flowName)));
