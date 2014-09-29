@@ -16,11 +16,12 @@ import com.paypal.utils.cb.kafka.Constants;
  * @author ssudhakaran
  *
  */
-public class CBCookieMessageConverterImpl implements CBMessageConverter {
+public class CBCookieMessageConverterImpl extends CBMessageConverter {
 	private static ObjectMapper objectMapper=null;
 	public static Charset charset = Charset.forName("UTF-8");
 	public static CharsetDecoder decoder = charset.newDecoder();
-
+	
+	@Override
 	public  String convert(String key,String message) {
 		try{
 		if(objectMapper==null) objectMapper=new org.codehaus.jackson.map.ObjectMapper();

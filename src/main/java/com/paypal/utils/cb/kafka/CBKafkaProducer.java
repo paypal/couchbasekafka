@@ -1,91 +1,82 @@
 package com.paypal.utils.cb.kafka;
 
-import java.io.ByteArrayOutputStream;
 import java.io.IOException;
-import java.util.Date;
-
-import org.apache.avro.generic.GenericDatumWriter;
-import org.apache.avro.generic.GenericRecord;
-import org.apache.avro.io.Encoder;
-import org.apache.avro.io.EncoderFactory;
-import org.apache.commons.codec.binary.StringUtils;
-
-import com.paypal.cookie.schema.CookiePPLog;
-
 import kafka.javaapi.producer.Producer;
 import kafka.producer.KeyedMessage;
 import kafka.producer.ProducerConfig;
 /**
- * CBKafkaProducer uses TAP Client to connect to Couchbase, consume message and push to Kafka.
- * TODO: Make it client agnostic. Should be easier to switch to URP when it gets replaced.
- * 
+ * CBKafkaProducer uses TAP Client to connect to Couchbase, 
+ * consume message and push to Kafka.
+ *
  * @author ssudhakaran
  *
  */
-public class CBKafkaProducer {
-	private static ProducerConfig producerConfig=null;
-	private static Producer<String, String> producer =null;
-			 
+public final class CBKafkaProducer {
+	
+	/**
+	 * @link http://kafka.apache.org/api-docs/0.6/kafka/producer/ProducerConfig.html
+	 */
+	private static ProducerConfig producerConfig;
+	
+	/**
+	 * @link http://people.apache.org/~joestein/kafka-0.7.1-incubating-docs/kafka/producer/Producer.html
+	 */
+	private static Producer<String, String> producer;
+
 	private static void init(){
-		 if(producerConfig==null)
-			 producerConfig=new ProducerConfig(ConfigLoader.getConfigProps());
-		 if(producer==null)
-			 producer = new Producer<String, String>(producerConfig);
+		 if(producerConfig==null) { producerConfig=new ProducerConfig(ConfigLoader.getKafkaConfigProps());}
+		 if(producer==null) { producer = new Producer<String, String>(producerConfig);}
 	}
-	public static void publishMessage(String key,String msg) throws IOException{
-		init();
-		String message=null;
+	
+	
+	
+	/**
+	 * Check if we have a valid Kafka producer
+	 * @return
+	 */
+	public static boolean isValidProducer(){
+		if(producer !=null) return true;
+		else {
+			init();
+			if(producer !=null) return true;
+			else return false;
+		}
+	}
+	
+	/**
+	 * Public Message to Kafka Queue
+	 * @param key - Key to Couchbase Document
+	 * @param msg - Body of Couchbase Document.
+	 * @throws IOException
+	 */
+	public static void publishMessage(final String key,final String message) throws IOException{
+		String msg=null;
 		try {
+			
 			//If we need to make any Transformation on the message.
 			if(Boolean.parseBoolean(ConfigLoader.getProp(Constants.ENABLETRANSFORMATION))){
-				//Use factory class to find the transformation class from properties file. 
-				message = CBMessageTransformerFactory.getInstance().createCBMessageConverter().convert(key, msg);
-			}else {
-				message=msg;
-			}
-		} catch (ClassNotFoundException e) {
-			//If no converter is found, perform no conversion
-			message=msg;
-		}
-
-		if(message !=null){
-			
-			if(Boolean.parseBoolean(ConfigLoader.getProp(Constants.ENABLEAVROENCODING))){
-			
-				CookiePPLog cookiePPLog=CookiePPLog.newBuilder().setTimestamp((new Date()).getTime()).setBody(new String(message)).build();
-				
-				GenericDatumWriter<CookiePPLog> serveWriter = new GenericDatumWriter<CookiePPLog>(cookiePPLog.getSchema());
-				ByteArrayOutputStream out = new ByteArrayOutputStream();
-				Encoder encoder=EncoderFactory.get().binaryEncoder(out,null);
-				serveWriter.write(cookiePPLog,encoder);
-				encoder.flush();
-				
-				
-				
-				String cbmessage=Constants.KAFKA_MESSAGE.replaceAll("<CBKEY>", key);
-				cbmessage=cbmessage.replaceAll("<CBVALUE>", StringUtils.newStringUtf8(out.toByteArray()));
-				
-				//System.out.println("MESSAGE: "+cbmessage);
-				//push to Kafka only if not null.
-				KeyedMessage<String, String> data = new KeyedMessage<String, String>(ConfigLoader.getProp(Constants.TOPIC_NAME), key, cbmessage);
-			//	System.out.println("Pushing >> "+data);
-				producer.send(data);
+				msg = CBMessageTransformerFactory.INSTANCE.createCBMessageConverter().convert(key, message);
 			}else{
-				String cbmessage=Constants.KAFKA_MESSAGE.replaceAll("<CBKEY>", key);
-				cbmessage=cbmessage.replaceAll("<CBVALUE>", message);
-				
-				//System.out.println("MESSAGE: "+cbmessage);
-
-				//System.out.println("Pushing "+message);
-				KeyedMessage<String, String> data = new KeyedMessage<String, String>(ConfigLoader.getProp(Constants.TOPIC_NAME), key, cbmessage);
-				producer.send(data);
-				
+				msg=message;
 			}
-			
+		} catch (Exception e) {
+			//If any exception, perform no conversion
 		}
 		
-		
+		if(msg!=null && msg.trim().length()>0){
+			//Wrap KEY/VALUE in JSON -format {\"KEY\":\"<CBKEY>\",\"VALUE\":<CBVALUE>}
+			String cbmessage=Constants.KAFKA_MESSAGE.replace("[CBKEY]", key);
+			cbmessage=cbmessage.replace("[CBVALUE]", msg);
+			
+			KeyedMessage<String, String> data = new KeyedMessage<String, String>(ConfigLoader.getKafkaConfigProps().getProperty(Constants.TOPIC_NAME), key, cbmessage);
+			
+			//property producer.type indicates async/sync message
+			if(data!=null) producer.send(data);
+		}
 	}
+	/**
+	 * close producer
+	 */
 	public static void closeProducer(){
 		producer.close();
 	}

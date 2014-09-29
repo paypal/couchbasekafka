@@ -20,6 +20,8 @@ import com.paypal.cookie.utils.CookieHeaders;;
  * @author ssudhakaran
  *
  */
-public interface CBMessageConverter {
-	String convert(String key,String message);
+public abstract class CBMessageConverter {
+	public String convert(String key,String message){
+		return message;
+	}
 }
