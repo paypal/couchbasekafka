@@ -22,6 +22,9 @@ import com.paypal.cookie.utils.CookieHeaders;;
  */
 public abstract class CBMessageConverter {
 	public String convert(String key,String message){
+		//use default topic and message string
+		//return new CBMessage(Constants.TOPIC_NAME,message);
 		return message;
 	}
+	
 }
