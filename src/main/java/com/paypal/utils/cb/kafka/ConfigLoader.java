@@ -23,6 +23,7 @@ public class ConfigLoader {
 			configprops.load(new FileInputStream(new File(propertiesPath+"/"+Constants.RESOURCEFILE)));
 			kafkaconfigprops.load(new FileInputStream(new File(propertiesPath+"/"+Constants.RESOURCEFILE_KAFKA)));
 			
+			/*
 			if(Boolean.parseBoolean(ConfigLoader.getProp(Constants.ENABLETRANSFORMATION))){
 				msgConverterMap=new HashMap<String,String>();
 				String converterAndKeys=configprops.getProperty(Constants.CBMESSAGECONVERTER);
@@ -33,7 +34,7 @@ public class ConfigLoader {
 						msgConverterMap.put(msgkeys[0], msgkeys[1]);
 					}
 				}
-			}
+			}*/
 		} catch (IOException e) {
 			// TODO Auto-generated catch block
 			e.printStackTrace();
@@ -43,6 +44,11 @@ public class ConfigLoader {
 	public static String getProp(String key){
 		if(configprops==null) init();
 		return configprops.getProperty(key);
+	}
+	
+	public static String getKafkaProp(String key){
+		if(kafkaconfigprops==null) init();
+		return kafkaconfigprops.getProperty(key);
 	}
 	
 	public static String getProp(String key,String defaultVal){

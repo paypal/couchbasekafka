@@ -24,6 +24,9 @@ public class Constants {
 	
 	//----KEY FOR FILTERING
 	public static final String KEYPREFIXFILTER="keyprefixfilter";
+	public static final String ANALYTICS_KEYPREFIXFILTER="analyticskeyprefixfilter";
+	public static final String TOPIC_NAME_STRING=".topicname";
+	
 	
 	//-----Message Converter factory
 	public static final String CBMESSAGECONVERTER="CBMessageConverter";

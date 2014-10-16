@@ -20,11 +20,11 @@ import com.paypal.cookie.utils.CookieHeaders;;
  * @author ssudhakaran
  *
  */
-public abstract class CBMessageConverter {
-	public String convert(String key,String message){
+public class CBMessageConverter {
+	public CBMessage convert(String key,String message){
 		//use default topic and message string
-		//return new CBMessage(Constants.TOPIC_NAME,message);
-		return message;
+		return new CBMessage(ConfigLoader.getKafkaProp(Constants.TOPIC_NAME),message);
+		//return message;
 	}
 	
 }
