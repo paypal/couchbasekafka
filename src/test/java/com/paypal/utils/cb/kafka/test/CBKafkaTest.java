@@ -15,11 +15,11 @@ import com.couchbase.client.CouchbaseClient;
 
 public class CBKafkaTest {
 
-	private static final String KAFKA_TOPICNAME="cookietopic";
+	private static final String KAFKA_TOPICNAME="default";
 	private static final String KAFKA_BROKER="127.0.0.1";
 	private static final int KAFKA_BROKERPORT=9092;
 	private static final String BUCKETNAME="beer-sample";
-	private static final String CBURL="http://127.0.0.1:8091/pools";
+	private static final String CBURL="http://stage2ck01.qa.paypal.com:8091/pools";
 	private static final int NOMESSAGES=10;
 	private static final String MESSAGEPREFIX="Vinoth_TEST1";
 	

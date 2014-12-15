@@ -17,7 +17,7 @@ public class Constants {
 	public static final String PARTITIONER_CLASS="partitioner.class";
 	public static final String TOPIC_NAME="cookie.topic";
 	public static final String REQUEST_REQUIRED_ACKS="request.required.acks";
-	public static final String KAFKA_MESSAGE="{\"KEY\":\"[CBKEY]\",\"VALUE\":[CBVALUE]}\n";
+	public static final String KAFKA_MESSAGE="{\"CBID\":\"[CBID]\",\"KEY\":\"[CBKEY]\",\"VALUE\":[CBVALUE]}\n";
 	
 	public static final String RESOURCEFILE="./config.properties";
 	public static final String RESOURCEFILE_KAFKA="./kafkaconfig.properties";
@@ -37,6 +37,8 @@ public class Constants {
 	public static final String START_DELAY_SEC="thread.startdelay";
 	public static final String INTERVAL_SEC="thread.interval";
 	public static final String INTERVAL_SEC_DEF="120";
+	
+	public static final int MAX_MSG_COUNTER=1000000;
 	
 	
 }
