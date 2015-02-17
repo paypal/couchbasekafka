@@ -2,6 +2,9 @@ couchbasekafka
 ==============
 Couchbase Agent to push messages to Kafka
 
+# TO RUN
+mvn clean package assembly:single
+java -jar cbkafka-1.0-jar-with-dependencies.jar
 
 #config.properties 
 - Contains settings for TAP API and Adapter
@@ -11,7 +14,7 @@ cb.startdate=1413500947028
 cb.fulldump=true -FULL dump of data from beginning. Doesnt use STREAM name and startdate if fulldump=true
 
 //Used to determine if Transformation required for the message.
-enableTransformation=true #If you would like to do preprocessing of data
+enableTransformation=true - If you would like to do preprocessing of data
 
 //Custom class used for transformation.
 CBMessageConverter=com.paypal.cookie.utils.CBCookieMessageConverterImpl #Custom class for preprocessing
