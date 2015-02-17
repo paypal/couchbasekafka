@@ -1,12 +1,11 @@
 couchbasekafka
 ==============
-
 Couchbase Agent to push messages to Kafka
-==============================
-config.properties
-==============================
-#Couchbase server
-cb.cbserver=http://IP:8091/pools
+
+
+config.properties - Contains settings for TAP API and Adapter
+---------------------------------------------------------------
+cb.cbserver=http://IP:8091/pools #Couchbase server
 
 #TAP specific settings.
 cb.streamname=cookiestream
@@ -28,10 +27,10 @@ cs_ca_.topicname=cookie.analytics
 #Used to switch on/off monitoring
 monitoringEnabled=true
 sherlockThreshold=200000
-=========================================
-kafkaconfig.properties - to configure settings specific to Kafka producer
-==========================================
 
+
+kafkaconfig.properties - to configure settings specific to Kafka producer
+------------------------------------------------------------------------
 metadata.broker.list - #Kafka brokers
 partitioner.class - Topic partition logic.
 request.required.acks- 0, means that the producer never waits for an acknowledgement
